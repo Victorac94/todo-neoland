@@ -39,6 +39,7 @@ form {
 
 form select,
 form input[type=text] {
+    height: 2em;
     padding: 0.3em;
     color: white;
     background-color: var(--background-input);
@@ -64,9 +65,18 @@ form input[type=text] {
     background-color: #6097fc
 }
 
-.fa-plus-circle,
-.fa-search {
-    color: #31323b;
+#form-filter-task input,
+#form-add-task input {
+    flex-grow: 1;
+    padding-left: 0.5em;
+}
+
+#form-filter-task input {
+    margin-right: 0;
+}
+
+.fa-plus-circle {
+    color: #fdfdfd;
     font-size: 1.2em;
     height: auto;
 }
@@ -84,8 +94,35 @@ form input[type=text] {
     font-size: 0.8em;
     padding: 0.5em 1em;
     font-weight: bold;
-    background-color: #3ba810;
+    background-color: #003bbb;
     color: white;
+}
+
+.pending-tasks-wrapper h2#task-added {
+    position: fixed;
+    left: 0;
+    top: 7.5em;
+    width: 100%;
+    background-color: #009b00;
+    transform: rotateX(-90deg);
+    transform-origin: top;
+}
+
+.task-added {
+    animation: animation-task-added 2s;
+    animation-delay: 0.1s;
+}
+
+@keyframes animation-task-added {
+    0% {
+        transform: rotateX(-90deg);
+    }
+    25% {
+        transform: rotateX(0);
+    }
+    100% {
+        transform: rotateX(0);
+    }
 }
 
 .task {
@@ -126,21 +163,22 @@ form input[type=text] {
     }
 }
 
-.low {
-    border-color: #4888ff;
+.monthly {
+    border-color: #2b75ff;
 }
 
-.medium {
+.weekly {
     border-color: #ff7424;
+    border-color: #a724ff;
 }
 
-.high {
+.urgent {
     border-color: #ff2e2e;
 }
 
 .task h3 {
     padding-bottom: 0.5em;
-    font-size: 0.85em;
+    font-size: 0.63em;
 }
 
 .task div {
@@ -150,11 +188,11 @@ form input[type=text] {
 }
 
 .fa-check {
-    color: #0baa0b;
+    color: #38ce38;
     padding: 0.4em;
 }
 
 .fa-trash {
-    color: #444444;
+    color: #6b6b6b;
     padding: 0.4em;
 }

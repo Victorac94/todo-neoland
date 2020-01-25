@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TODO Neoland</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+    <header>
+        <!-- Form to add new tasks -->
+        <form action="" method="GET" id="form-add-task">
+            <select name="filter-priority" id="select-add-priority">
+                <option value="low" selected>Prioridad baja</option>
+                <option value="medium">Prioridad media</option>
+                <option value="high">Prioridad alta</option>
+            </select>
+            <input type="text" id="input-add-task" name="input-box" placeholder="Añadir tarea...">
+            <i class="fas fa-plus-circle"></i>
+            <!-- <input type="submit" id="submit-add-task" value="Añadir"> -->
+        </form>
+        <!-- Form to filter tasks being shown -->
+        <form action="" method="GET" id="form-filter-task">
+            <select name="filter-priority" id="select-filter-priority">
+                <option value="all" selected>Mostrar todas</option>
+                <option value="low">Prioridad baja</option>
+                <option value="medium">Prioridad media</option>
+                <option value="high">Prioridad alta</option>
+            </select>
+            <input type="text" id="input-search-task" placeholder="Buscar tarea...">
+            <i class="fas fa-search"></i>
+            <!-- <input type="submit" id="submit-filter-task" value="Buscar"> -->
+        </form>
+    </header>
+    <!-- Section that contains all tasks being shown -->
+    <section class="pending-tasks-wrapper">
+        <h2>TAREAS PENDIENTES</h2>
+        <section id="pending-tasks"></section>
+    </section>
+
+    <!-- Load Javascript -->
+    <script src="js/index.js"></script>
+</body>
+
+</html>

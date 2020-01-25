@@ -134,6 +134,8 @@ form input[type=text] {
     border: 3px solid black;
     border-radius: 5px;
     margin: 2px 0;
+    position: relative;
+    transition: all 0.5s;
 }
 
 .add-task-animation {
@@ -185,6 +187,44 @@ form input[type=text] {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+#cancel-delete {
+    position: fixed;
+    top: 100%;
+    left: 10%;
+    width: 80%;
+    height: 3em;
+    padding: 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #31323b;
+    color: white;
+}
+
+#cancel-delete span:last-child {
+    color: #79b7ff;
+    font-size: 1em;
+}
+
+.show-cancel-delete {
+    animation: animation-show-cancel-delete 4s;
+}
+
+@keyframes animation-show-cancel-delete {
+    0% {
+        top: 100%;
+    }
+    10% {
+        top: calc(100% - 3em);
+    }
+    90% {
+        top: calc(100% - 3em);
+    }
+    100% {
+        top: 100%;
+    }
 }
 
 .fa-check {

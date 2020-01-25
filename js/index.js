@@ -75,17 +75,25 @@ function addTask(titulo, priority = 'urgent') {
 
 function removeTask(id, event) {
     let pendingTasksContainer = document.querySelectorAll('.pending-task');
-    let idToRemove = id || event.target.dataset.id;
+    let cancelDelete = document.getElementById('cancel-delete');
+    let idToRemove = id || event.target.dataset.id || idCount; // If no event or id is passed, it removes the last task added (thus idCount)
 
+    if (!event) {
+        pendingTasksContainer[idToRemove - 1].style.display = 'none';
+        cancelDelete.classList.add('show-cancel-delete');
+    }
 
+    let removeTimeout = setTimeout(() => {
+        pendingTasksContainer[idToRemove - 1].remove();
 
-    // for (let i = 0; i < arrayPendingTasks.length; i++) {
-    //     let task = arrayPendingTasks[i];
+        for (let i = 0; i < arrayPendingTasks.length; i++) {
+            let task = arrayPendingTasks[i];
 
-    //     if (idToRemove === task.idTarea) {
-    //         arrayPendingTasks.splice(i, 1);
-    //     }
-    // }
-    // console.log(arrayPendingTasks);
-    // showPendingTasks();
+            if (idToRemove === task.idTarea) {
+                arrayPendingTasks.splice(i, 1);
+            }
+        }
+        console.log(arrayPendingTasks);
+        // showPendingTasks();
+    }, 4000);
 }

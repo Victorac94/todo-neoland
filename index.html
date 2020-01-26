@@ -11,38 +11,40 @@
 </head>
 
 <body>
-    <header>
-        <!-- Form to add new tasks -->
-        <form action="" method="GET" id="form-add-task">
-            <select name="filter-priority" id="select-add-priority">
-                <option value="monthly">Mensual</option>
-                <option value="weekly">Semanal</option>
-                <option value="urgent" selected>Urgente</option>
-            </select>
-            <input type="text" id="input-add-task" name="input-box" placeholder="Añadir tarea...">
-            <i class="fas fa-plus-circle"></i>
-            <!-- <input type="submit" id="submit-add-task" value="Añadir"> -->
-        </form>
-        <!-- Form to filter tasks being shown -->
-        <form action="" method="GET" id="form-filter-task">
-            <select name="filter-priority" id="select-filter-priority">
-                <option value="all" selected>Mostrar todas</option>
-                <option value="monthly">Mensual</option>
-                <option value="weekly">Semanal</option>
-                <option value="urgent">Urgente</option>
-            </select>
-            <input type="text" id="input-search-task" placeholder="Buscar tarea...">
-        </form>
-    </header>
-    <!-- Section that contains all tasks being shown -->
-    <section class="pending-tasks-wrapper">
-        <h2>TAREAS PENDIENTES</h2>
-        <h2 id="task-added">TAREA AÑADIDA</h2>
-        <section id="pending-tasks"></section>
-    </section>
-    <div id="cancel-delete">
-        <span>Tarea eliminada</span>
-        <span>DESHACER</span>
+    <div class="container">
+        <header>
+            <!-- Form to add new tasks -->
+            <form action="" method="GET" id="form-add-task">
+                <select name="filter-priority" id="select-add-priority">
+                    <option value="monthly">Mensual</option>
+                    <option value="weekly">Semanal</option>
+                    <option value="urgent" selected>Urgente</option>
+                </select>
+                <input type="text" id="input-add-task" name="input-box" placeholder="Añadir tarea...">
+                <i class="fas fa-plus-circle"></i>
+                <!-- <input type="submit" id="submit-add-task" value="Añadir"> -->
+            </form>
+            <!-- Form to filter tasks being shown -->
+            <form action="" method="GET" id="form-filter-task">
+                <select name="filter-priority" id="select-filter-priority">
+                    <option value="all" selected>Mostrar todas</option>
+                    <option value="monthly">Mensual</option>
+                    <option value="weekly">Semanal</option>
+                    <option value="urgent">Urgente</option>
+                </select>
+                <input type="text" id="input-search-task" placeholder="Buscar tarea...">
+            </form>
+        </header>
+        <!-- Section that contains all tasks being shown -->
+        <section class="pending-tasks-wrapper">
+            <h2>TAREAS PENDIENTES</h2>
+            <h2 id="task-added">TAREA AÑADIDA</h2>
+            <section id="pending-tasks"></section>
+        </section>
+        <div id="cancel-delete">
+            <span>Tarea eliminada</span>
+            <span>DESHACER</span>
+        </div>
     </div>
 
     <!-- Load Javascript -->

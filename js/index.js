@@ -74,15 +74,16 @@ function addTask(titulo, priority = 'urgent') {
 }
 
 function removeTask(id, event) {
-    let pendingTasksContainer = document.querySelectorAll('.pending-task');
-    let cancelDelete = document.getElementById('cancel-delete');
-    let idToRemove = id || event.target.dataset.id || idCount; // If no event or id is passed, it removes the last task added (thus idCount)
+    let pendingTasksContainer = document.querySelectorAll('.pending-task'); // Tag that contains all pending tasks
+    let cancelDelete = document.getElementById('cancel-delete'); // Button that shows up when deleting a task 
+    let idToRemove = id || event.target.dataset.id || idCount; // If no event or id is passed, it removes the last task added
 
     if (!event) {
-        pendingTasksContainer[idToRemove - 1].style.display = 'none';
-        cancelDelete.classList.add('show-cancel-delete');
+        pendingTasksContainer[idToRemove - 1].style.display = 'none'; // Hide task that is going to be removed 
+        cancelDelete.classList.add('show-cancel-delete'); // Cancel delete task button shows up
     }
 
+    // After 2 seconds if the 'cancel delete' button has not been clicked, delete the task from the DOM and from the pending tasks array
     let removeTimeout = setTimeout(() => {
         pendingTasksContainer[idToRemove - 1].remove();
 
@@ -94,6 +95,5 @@ function removeTask(id, event) {
             }
         }
         console.log(arrayPendingTasks);
-        // showPendingTasks();
     }, 4000);
 }

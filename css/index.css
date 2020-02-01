@@ -58,10 +58,6 @@ form input[type=text]::placeholder {
     color: #c5c5c5
 }
 
-form input[type=text] {
-    margin: 0 5px;
-}
-
 #form-add-task {
     background-color: #4079e2
 }
@@ -75,21 +71,52 @@ form input[type=text] {
     position: relative;
     flex-grow: 1;
     display: flex;
+    overflow: hidden;
+    margin: 0 5px;
+}
+
+#input-filter-task-wrapper {
+    margin-right: 0;
 }
 
 #input-add-task,
 #input-filter-task {
+    border: 1.5px solid transparent;
     flex-grow: 1;
     padding-left: 0.5em;
 }
 
-#input-filter-task {
-    margin-right: 0;
+.clear-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0.35em;
+    right: -1em; /* hidden */
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    color: #31323b;
+    background-color: white;
+    opacity: 0;
+    transition: 0.5s;
 }
 
-.input-add-error-tooltip,
-.input-filter-error-tooltip {
-    opacity: 0;
+.clear-input i {
+    display: flex;
+    align-items: center;
+    font-size: 0.75em;
+}
+
+.show-clear-input {
+    opacity: 1;
+    right: 0.7em;
+    transform: rotateZ(-180deg);
+}
+
+/* .input-filter-error-tooltip, */
+.input-add-error-tooltip {
+    display: none;
     position: absolute;
     top: 2.1em;
     left: 50%;
@@ -97,13 +124,14 @@ form input[type=text] {
     padding: 0.5em 0.6em;
     color: #444;
     background-color: white;
-    border: 1px solid red;
+    border: 1.5px solid red;
     border-radius: 5px;
     z-index: 1000;
 }
 
-.input-add-error-tooltip::after,
-.input-filter-error-tooltip::after {
+/* .input-filter-error-tooltip::after, */
+.input-add-error-tooltip::after {
+
     content: ' ';
     position: absolute;
     top: -1em;
@@ -115,22 +143,18 @@ form input[type=text] {
 }
 
 .show-error-tooltip {
-    transition: 0.3s;
-    opacity: 1;
+    display: block;
 }
 
-.show-error-border {
-    border: 2px solid red;
+/* #input-filter-task.show-error-border, */
+#input-add-task.show-error-border {
+    border-color: red;
 }
 
 .fa-plus-circle {
     color: #fdfdfd;
     font-size: 1.2em;
     height: auto;
-}
-
-.incorrect-input {
-    border: 1px solid red;
 }
 
 /*########################

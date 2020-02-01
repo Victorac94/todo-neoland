@@ -1,5 +1,4 @@
 /* TODO: 
-    -Añadir boton para borrar todo el input
     -Añadir lista de tareas completadas
     -Arreglar que al añadir una nueva tarea sólo me la muestre en la lista actual si estamos filtrando las tareas que pertenecen a esa categoría o estamos mostrando todas. Si no, se añade al array de tareas peo no se muestra.
  */
@@ -7,12 +6,13 @@
 let pendingTasksSection = document.getElementById('pending-tasks');
 let inputAddTask = document.querySelector('#input-add-task');
 let addTaskIcon = document.getElementById('add-task-icon'); // Icon that adds a new pending task
+let clearInputIcons = document.querySelectorAll('.clear-input');
 let inputFilter = document.querySelector('#input-filter-task'); // Input that filters tasks by title
 let selectFilter = document.querySelector('#select-filter-priority'); // Select that filters tasks by priority
 let cancelDelete = document.getElementById('cancel-delete'); // Banner that shows up when deleting a task
 let cancelDeleteBtn = cancelDelete.querySelector('span:last-child'); // Button of the cancel delete task banner
 let idCount = 1; // This variable increases everytime we create a new task. Represents the id of that new task. It can only increase
-let timeout_deletingTask, timeout_cancelBtn;
+// let timeout_deletingTask, timeout_cancelBtn;
 let idToRemove;
 let cancelingTask;
 
@@ -22,10 +22,40 @@ inputAddTask.addEventListener('keydown', e => {
         addTask(e);
     }
 });
+inputAddTask.addEventListener('keyup', toggleClearInput)
+inputFilter.addEventListener('keyup', toggleClearInput);
 inputFilter.addEventListener('input', executeFilterTasks);
 selectFilter.addEventListener('change', executeFilterTasks);
+clearInputIcons[0].addEventListener('click', clearInputFields);
+clearInputIcons[1].addEventListener('click', clearInputFields);
 cancelDeleteBtn.addEventListener('click', cancelDeleteTask);
 
+// Show / hide clear input button
+function toggleClearInput(e) {
+    // If this function has been called by typing in the input
+    if (e.target.tagName == 'INPUT') {
+        if (e.target.value.trim() != '') {
+            e.target.nextElementSibling.classList.add('show-clear-input');
+        } else {
+            e.target.nextElementSibling.classList.remove('show-clear-input');
+        }
+    }
+    // If this function has been called by clicking on the clear input icon
+    else {
+        e.currentTarget.classList.remove('show-clear-input');
+    }
+}
+
+// Remove input field values
+function clearInputFields(e) {
+    e.currentTarget.previousElementSibling.value = '';
+    toggleClearInput(e);
+    if (e.currentTarget.parentNode.id == 'input-filter-task-wrapper') {
+        executeFilterTasks();
+    }
+}
+
+// Show to DOM all pending tasks
 function showPendingTasks(tasks = arrayPendingTasks, addingTask = false, removingTask = false) {
     let tasksList = '';
 

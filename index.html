@@ -15,24 +15,31 @@
         <header>
             <!-- Form to add new tasks -->
             <form action="" method="GET" id="form-add-task">
-                <select name="filter-priority" id="select-add-priority">
+                <select name="add-priority" id="select-add-priority">
                     <option value="monthly">Mensual</option>
                     <option value="weekly">Semanal</option>
                     <option value="urgent" selected>Urgente</option>
                 </select>
-                <input type="text" id="input-add-task" name="input-box" placeholder="Añadir tarea...">
-                <i class="fas fa-plus-circle"></i>
+                <div id="input-add-task-wrapper">
+                    <input type="text" id="input-add-task" name="input-box" placeholder="Añadir tarea..."
+                        autocomplete="off">
+                    <div class="input-add-error-tooltip">Input incorrecto</div>
+                </div>
+                <i id="add-task-icon" class="fas fa-plus-circle"></i>
                 <!-- <input type="submit" id="submit-add-task" value="Añadir"> -->
             </form>
             <!-- Form to filter tasks being shown -->
             <form action="" method="GET" id="form-filter-task">
                 <select name="filter-priority" id="select-filter-priority">
-                    <option value="all" selected>Mostrar todas</option>
+                    <option value="" selected>Mostrar todas</option>
                     <option value="monthly">Mensual</option>
                     <option value="weekly">Semanal</option>
                     <option value="urgent">Urgente</option>
                 </select>
-                <input type="text" id="input-search-task" placeholder="Buscar tarea...">
+                <div id="input-filter-task-wrapper">
+                    <input type="text" id="input-filter-task" placeholder="Buscar tarea..." autocomplete="off">
+                    <div class="input-filter-error-tooltip">Input incorrecto</div>
+                </div>
             </form>
         </header>
         <!-- Section that contains all tasks being shown -->
@@ -48,7 +55,9 @@
     </div>
 
     <!-- Load Javascript -->
-    <script src="js/index.js"></script>
+    <script src="js/model.js"></script>
+    <script src="js/controller.js"></script>
+    <script src="js/view.js"></script>
 </body>
 
 </html>

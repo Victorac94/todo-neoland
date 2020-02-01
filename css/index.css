@@ -70,20 +70,67 @@ form input[type=text] {
     background-color: #6097fc
 }
 
-#form-filter-task input,
-#form-add-task input {
+#input-filter-task-wrapper,
+#input-add-task-wrapper {
+    position: relative;
+    flex-grow: 1;
+    display: flex;
+}
+
+#input-add-task,
+#input-filter-task {
     flex-grow: 1;
     padding-left: 0.5em;
 }
 
-#form-filter-task input {
+#input-filter-task {
     margin-right: 0;
+}
+
+.input-add-error-tooltip,
+.input-filter-error-tooltip {
+    opacity: 0;
+    position: absolute;
+    top: 2.1em;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5em 0.6em;
+    color: #444;
+    background-color: white;
+    border: 1px solid red;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+.input-add-error-tooltip::after,
+.input-filter-error-tooltip::after {
+    content: ' ';
+    position: absolute;
+    top: -1em;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 0.5em;
+    border-style: solid;
+    border-color: transparent transparent white transparent;
+}
+
+.show-error-tooltip {
+    transition: 0.3s;
+    opacity: 1;
+}
+
+.show-error-border {
+    border: 2px solid red;
 }
 
 .fa-plus-circle {
     color: #fdfdfd;
     font-size: 1.2em;
     height: auto;
+}
+
+.incorrect-input {
+    border: 1px solid red;
 }
 
 /*########################
@@ -200,6 +247,7 @@ form input[type=text] {
 #cancel-delete {
     position: fixed;
     top: 120%;
+    left: 10%;
     width: 80%;
     max-width: 43.75em; /* 700px */
     height: 3em;
@@ -215,6 +263,7 @@ form input[type=text] {
 #cancel-delete span:last-child {
     color: #79b7ff;
     font-size: 1em;
+    cursor: pointer;
 }
 
 .show-cancel-delete {
@@ -257,6 +306,10 @@ form input[type=text] {
     }
     #pending-tasks {
         padding: 0;
+    }
+    #cancel-delete {
+        width: 25em;
+        left: calc(50% - 12.5em);
     }
 }
 

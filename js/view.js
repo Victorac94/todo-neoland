@@ -1,6 +1,5 @@
 /* TODO: 
     -Añadir lista de tareas completadas
-    -Arreglar que al añadir una nueva tarea sólo me la muestre en la lista actual si estamos filtrando las tareas que pertenecen a esa categoría o estamos mostrando todas. Si no, se añade al array de tareas peo no se muestra.
  */
 
 let pendingTasksSection = document.getElementById('pending-tasks');
@@ -89,6 +88,7 @@ function addTask(e) {
     let newTask = new Array();
     let inputAdd = document.querySelector('#input-add-task');
     let taskPriority = document.querySelector('#select-add-priority');
+    let selectedFilter = document.querySelector('#select-filter-priority');
     let taskAddedHeader = document.getElementById('task-added');
     let tasksHTML = document.getElementsByClassName('pending-task'); // Si busco por 'add-task-animation' me coge todos los elementos que la tienen pero en el for() no me itera por todos ellos.
 
@@ -121,7 +121,9 @@ function addTask(e) {
     inputAdd.value = ''; // Clean new task input
     inputAdd.focus(); // Focus again that input to add new task
     arrayPendingTasks.push(...newTask); // Add task to array containing all pending tasks
-    showPendingTasks(newTask, true); // Show this new task along with the others already shown
+    if (taskPriority.value == selectedFilter.value || selectedFilter.value == '') {
+        showPendingTasks(newTask, true); // Show this new task along with the others already shown
+    }
     taskAddedHeader.classList.add('task-added'); // Animate 'Task added' header
     setTimeout(() => {
         taskAddedHeader.classList.remove('task-added') // Remove animation class from 'Task added' header

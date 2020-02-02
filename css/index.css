@@ -117,8 +117,9 @@ form input[type=text]::placeholder {
 /* .input-filter-error-tooltip, */
 .input-add-error-tooltip {
     display: none;
+    font-size: 0.9em;
     position: absolute;
-    top: 2.1em;
+    top: 3em;
     left: 50%;
     transform: translateX(-50%);
     padding: 0.5em 0.6em;
@@ -131,10 +132,9 @@ form input[type=text]::placeholder {
 
 /* .input-filter-error-tooltip::after, */
 .input-add-error-tooltip::after {
-
     content: ' ';
     position: absolute;
-    top: -1em;
+    top: -0.9em;
     left: 50%;
     transform: translateX(-50%);
     border-width: 0.5em;

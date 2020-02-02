@@ -1,13 +1,12 @@
 /* TODO: 
-    +Añadir seccion de tareas completadas que permita re-añadir a pendientes las ya realizadas
     -Animar tareas para que ocupen el espacio de la tarea eliminada
     -Animar tarea que esta siendo eliminada
-    -Arreglar input incorrecto no se muestra
+    +Arreglar input incorrecto no se muestra
+    -Agregar animacion de tarea restaurada (h2)
+    -Arreglar que al restaurar una tarea solo se me muestre en la lista de tareas pendientes actual si no tengo filtro o las prioridades coinciden
 
    Hecho:
-   -Limpieza de codigo
-   -Añadida area de Tareas completadas con animacion
-   -Corregido bug que al filtrar las tareas su data-id cambiaba solo
+   -Arreglado div 'input incorrecto' no se mostraba
  */
 
 let pendingTasksSection = document.querySelector('#pending-tasks');
@@ -56,6 +55,8 @@ function toggleClearInputButton(e) {
 function clearInputFields(e) {
     e.currentTarget.previousElementSibling.value = '';
     toggleClearInputButton(e);
+    e.currentTarget.previousElementSibling.focus();
+    // If it is the filter input
     if (e.currentTarget.parentNode.id == 'input-filter-task-wrapper') {
         executeFilterTasks();
     }

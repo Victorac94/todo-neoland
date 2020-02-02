@@ -1,26 +1,27 @@
 /*################################# MODELO #############################*/
 
 let arrayPendingTasks = new Array();
+let arrayCompletedTasks = new Array();
 
 arrayPendingTasks = [
     {
         idTarea: 1,
-        titulo: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, natus?',
+        titulo: '1 Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, natus?',
         prioridad: 'monthly'
     },
     {
         idTarea: 2,
-        titulo: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, natus?',
+        titulo: '2 Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, natus?',
         prioridad: 'weekly'
     },
     {
         idTarea: 3,
-        titulo: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, natus?',
+        titulo: '3 Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, natus?',
         prioridad: 'monthly'
     },
     {
         idTarea: 4,
-        titulo: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, natus?',
+        titulo: '4 Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, natus?',
         prioridad: 'urgent'
     },
 ];

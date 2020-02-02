@@ -1,28 +1,35 @@
 /* TODO: 
-    -Añadir lista de tareas completadas
+    +Añadir seccion de tareas completadas que permita re-añadir a pendientes las ya realizadas
+    -Animar tareas para que ocupen el espacio de la tarea eliminada
+    -Animar tarea que esta siendo eliminada
+    -Arreglar input incorrecto no se muestra
+
+   Hecho:
+   -Limpieza de codigo
+   -Añadida area de Tareas completadas con animacion
+   -Corregido bug que al filtrar las tareas su data-id cambiaba solo
  */
 
-let pendingTasksSection = document.getElementById('pending-tasks');
+let pendingTasksSection = document.querySelector('#pending-tasks');
 let inputAddTask = document.querySelector('#input-add-task');
-let addTaskIcon = document.getElementById('add-task-icon'); // Icon that adds a new pending task
+let addTaskIcon = document.querySelector('#add-task-icon'); // Icon that adds a new pending task
 let clearInputIcons = document.querySelectorAll('.clear-input');
 let inputFilter = document.querySelector('#input-filter-task'); // Input that filters tasks by title
 let selectFilter = document.querySelector('#select-filter-priority'); // Select that filters tasks by priority
-let cancelDelete = document.getElementById('cancel-delete'); // Banner that shows up when deleting a task
+let cancelDelete = document.querySelector('#cancel-delete'); // Banner that shows up when deleting a task
 let cancelDeleteBtn = cancelDelete.querySelector('span:last-child'); // Button of the cancel delete task banner
-let idCount = 1; // This variable increases everytime we create a new task. Represents the id of that new task. It can only increase
-// let timeout_deletingTask, timeout_cancelBtn;
+let idCount = arrayPendingTasks.length; // This variable increases everytime we add a new task. Represents the id of that new task. It can only increase
 let idToRemove;
 let cancelingTask;
 
-addTaskIcon.addEventListener('click', addTask);
+addTaskIcon.addEventListener('click', addNewTask);
 inputAddTask.addEventListener('keydown', e => {
     if (e.keyCode == 13) {
-        addTask(e);
+        addNewTask(e);
     }
 });
-inputAddTask.addEventListener('keyup', toggleClearInput)
-inputFilter.addEventListener('keyup', toggleClearInput);
+inputAddTask.addEventListener('keyup', toggleClearInputButton)
+inputFilter.addEventListener('keyup', toggleClearInputButton);
 inputFilter.addEventListener('input', executeFilterTasks);
 selectFilter.addEventListener('change', executeFilterTasks);
 clearInputIcons[0].addEventListener('click', clearInputFields);
@@ -30,8 +37,8 @@ clearInputIcons[1].addEventListener('click', clearInputFields);
 cancelDeleteBtn.addEventListener('click', cancelDeleteTask);
 
 // Show / hide clear input button
-function toggleClearInput(e) {
-    // If this function has been called by typing in the input
+function toggleClearInputButton(e) {
+    // If this function has been called by typing in the input fields
     if (e.target.tagName == 'INPUT') {
         if (e.target.value.trim() != '') {
             e.target.nextElementSibling.classList.add('show-clear-input');
@@ -45,17 +52,17 @@ function toggleClearInput(e) {
     }
 }
 
-// Remove input field values
+// Delete input field values
 function clearInputFields(e) {
     e.currentTarget.previousElementSibling.value = '';
-    toggleClearInput(e);
+    toggleClearInputButton(e);
     if (e.currentTarget.parentNode.id == 'input-filter-task-wrapper') {
         executeFilterTasks();
     }
 }
 
-// Show to DOM all pending tasks
-function showPendingTasks(tasks = arrayPendingTasks, addingTask = false, removingTask = false) {
+// Show all pending tasks
+function showPendingTasks(tasks = arrayPendingTasks, addingTask = false) {
     let tasksList = '';
 
     for (task of tasks) {
@@ -69,21 +76,32 @@ function showPendingTasks(tasks = arrayPendingTasks, addingTask = false, removin
             priority = 'URGENTE'
         }
 
-        tasksList += '<article class="task add-task-animation pending-task ' + task.prioridad + '" data-id="' + idCount + '"><h3>' + priority + '</h3><div><p>' + task.titulo + '</p><div class="task-actions"> <i class="fas fa-check"></i><i class="fas fa-trash"></i></div></div></article>'
-
-        idCount++;
+        tasksList += '<article class="task add-task-animation pending-task ' + task.prioridad + '" data-id="' + task.idTarea + '"><h3>' + priority + '</h3><div><p>' + task.titulo + '</p><div class="task-actions"> <i class="fas fa-check"></i><i class="fas fa-trash"></i></div></div></article>'
     }
     addingTask ? pendingTasksSection.innerHTML += tasksList : pendingTasksSection.innerHTML = tasksList;
 
-    let trashIcons = document.querySelectorAll('.fa-trash')
+    let addedTasks = document.querySelectorAll('.pending-task');
+
+    addedTasks.forEach(task => {
+        task.addEventListener('animationend', () => {
+            task.classList.remove('add-task-animation');
+            task.removeEventListener('animationend', this);
+        })
+    })
+
+    let trashIcons = document.querySelectorAll('.fa-trash');
+    let tickIcons = document.querySelectorAll('.fa-check');
     for (icon of trashIcons) {
         icon.addEventListener('click', removeTask);
     }
+    for (icon of tickIcons) {
+        icon.addEventListener('click', addCompletedTask);
+    }
 }
 
-showPendingTasks(arrayPendingTasks);
+showPendingTasks(arrayPendingTasks, true);
 
-function addTask(e) {
+function addNewTask(e) {
     e.preventDefault();
     let newTask = new Array();
     let inputAdd = document.querySelector('#input-add-task');
@@ -112,7 +130,7 @@ function addTask(e) {
 
     newTask = [
         {
-            idTarea: idCount,
+            idTarea: ++idCount,
             titulo: inputAdd.value,
             prioridad: taskPriority.value
         }
@@ -130,6 +148,100 @@ function addTask(e) {
     }, 2100)
 }
 
+function addCompletedTask(e) {
+    let completedTasks = document.querySelector('#completed-tasks');
+    let completedTasksWrapper = document.querySelector('.completed-tasks-wrapper');
+    let restoreTaskIcon;
+    // 'e.target.parentNode.parentNode.parentNode' refers to the task where the tick icon was clicked, the <article>
+    let task = e.target.parentNode.parentNode.parentNode;
+    let [yElemMove, ySiblingsMove] = calculatePositions(task, completedTasks);
+
+    let nextElems = moveAffectedElements(task, ySiblingsMove, completedTasksWrapper, false);
+
+    // Translate the completed task to the 'completed tasks' section
+    task.style.transform = `translateY(${yElemMove}px)`;
+    task.style.zIndex = '10';
+    task.querySelector('i:first-child').classList.remove('fa-check');
+    task.querySelector('i:first-child').classList.add('fa-level-up-alt');
+    task.querySelector('i:last-child').classList.remove('fa-trash');
+    task.addEventListener('transitionend', () => {
+        let taskCompleted = task.cloneNode(true); // If true, also copies the inner nodes
+        nextElems.forEach(elem => {
+            elem.style.transition = '0s'; // 0s makes the trick. If not, transition from class 'pending-task' remains active
+            elem.style.transform = '';
+        })
+        task.remove();
+        restoreTaskIcon = taskCompleted.querySelector('.fa-level-up-alt');
+        restoreTaskIcon.addEventListener('click', restoreTask);
+        taskCompleted.style.transition = '';
+        taskCompleted.style.transform = '';
+        taskCompleted.style.zIndex = 'initial';
+        taskCompleted.classList.remove('pending-task');
+        taskCompleted.classList.add('completed-task');
+        completedTasks.appendChild(taskCompleted);
+        swapTaskBetweenLists(taskCompleted.dataset.id, arrayPendingTasks, arrayCompletedTasks);
+    })
+}
+// No se ejecuta esta funcion??
+function restoreTask(e) {
+    let task = e.target.parentNode.parentNode.parentNode; // The task itself, the <article>
+    let completedTasksWrapper = document.querySelector('.completed-tasks-wrapper');
+    let [yElemMove, ySiblingsMove] = calculatePositions(task, pendingTasksSection);
+
+    let nextElems = moveAffectedElements(task, ySiblingsMove, completedTasksWrapper, true);
+
+    task.style.transform = `translateY(${yElemMove}px)`;
+    task.style.zIndex = '10';
+    task.querySelector('i:first-child').classList.remove('fa-level-up-alt');
+    task.querySelector('i:first-child').classList.add('fa-check');
+    task.querySelector('i').parentNode.innerHTML += '<i class="fas fa-trash"></i>';
+    task.addEventListener('transitionend', () => {
+        let taskCompleted = task.cloneNode(true); // If true, also copies the inner nodes
+        nextElems.forEach(elem => {
+            elem.style.transition = '0s'; // 0s makes the trick. If not, transition from class 'pending-task' remains active
+            elem.style.transform = '';
+        })
+        task.remove();
+        taskCompleted.querySelector('i:first-child').addEventListener('click', addCompletedTask);
+        taskCompleted.querySelector('i:last-child').addEventListener('click', removeTask);
+        taskCompleted.style.transition = '';
+        taskCompleted.style.transform = '';
+        taskCompleted.style.zIndex = 'initial';
+        taskCompleted.classList.remove('completed-task');
+        taskCompleted.classList.add('pending-task');
+        pendingTasksSection.appendChild(taskCompleted);
+        swapTaskBetweenLists(taskCompleted.dataset.id, arrayCompletedTasks, arrayPendingTasks);
+    })
+}
+
+// Translate the tasks that come after the one completed/re-added and the tasks completed section to occupy its position
+function moveAffectedElements(task, distance, completedTasksWrapper, isRestoring) {
+    let nextElems = new Array();
+    isRestoring = isRestoring ? '+' : '-';
+
+    completedTasksWrapper.style.transition = 'all 0.5s';
+    completedTasksWrapper.style.transform = `translateY(${isRestoring + distance + 2}px)`; // '+ 2' counts for the margin-top of the tasks
+    while (task) {
+        task.style.transition = 'all 0.5s';
+        task.style.transform = `translateY(-${distance + 2}px)`; // '+ 2' counts for the margin-top of the tasks
+        nextElems.push(task);
+        task.addEventListener('transitionend', e => {
+
+            e.target.removeEventListener('transitionend', this);
+        })
+
+        task = task.nextElementSibling;
+    }
+
+    completedTasksWrapper.addEventListener('transitionend', () => {
+        completedTasksWrapper.style.transition = '';
+        completedTasksWrapper.style.transform = '';
+        completedTasksWrapper.removeEventListener('transitionend', this);
+    })
+
+    return nextElems;
+}
+
 function executeFilterTasks() {
     let input = document.querySelector('#input-filter-task').value; // Input that filters tasks by title
     let select = document.querySelector('#select-filter-priority').value; // Select that filters tasks by priority
@@ -141,51 +253,35 @@ function executeFilterTasks() {
 function removeTask(event) {
     // If we are already on the process of deleting a task (cancel deleting task banner is already showing) then delete that task and prepare to delete this new one
     if (cancelDelete.classList.contains('show-cancel-delete')) {
-        console.log('Dentro del if')
-        deletingTask(idToRemove, cancelingTask);
-        // Clear timeout of old (currently going) deleting task before setting up the new one
-        // clearTimeout(timeout_deletingTask);
-        // console.log(timeout_cancelBtn);
-        // clearTimeout(timeout_cancelBtn);
-        // console.log(timeout_cancelBtn);
-        // timeout_cancelBtn = setTimeout(removingCancelBtn, 4000);
+        deletingTask(idToRemove, cancelingTask, arrayPendingTasks);
         // We have to clone the node to reinitialize the animation, or force reflow (https://css-tricks.com/restart-css-animation/)
-        let cancelDelete2 = cancelDelete.cloneNode(true);
+        let cancelDelete2 = cancelDelete.cloneNode(true); // If true, also copies the inner nodes
         cancelDelete.parentNode.replaceChild(cancelDelete2, cancelDelete);
         cancelDelete = cancelDelete2;
         cancelDelete.classList.add('show-cancel-delete');
         cancelDeleteBtn = cancelDelete.querySelector('span:last-child'); // Re-get button so that the event listener works
         cancelDeleteBtn.addEventListener('click', cancelDeleteTask); //  Re-assign event listener to the new cancelDeleteBtn
-        // clearTimeout(timeout_cancelBtn);
     }
-    console.log('Fuera del if')
     // event.path is an array of tags going up the DOM tree beginning from the tag clicked (in this case the trash icon).
     // event.path[3] refers to the task being deleted. The <article> itself.
     idToRemove = parseInt(event.path[3].dataset.id);
     cancelingTask = event.path[3];
-    console.log(event.path[3]);
     cancelingTask.style.display = 'none'; // Hide task that is going to be removed 
     cancelDelete.classList.add('show-cancel-delete'); // Cancel delete task button shows up
 
     cancelDelete.addEventListener('animationend', () => {
         removingCancelBtn();
-        deletingTask(idToRemove, cancelingTask);
+        deletingTask(idToRemove, cancelingTask, arrayPendingTasks);
     });
-
-    // After 4 seconds if the 'cancel delete' button has not been clicked, delete the task from the DOM and from the pending tasks array
-    // timeout_deletingTask = setTimeout(deletingTask, 4000, idToRemove, cancelingTask, timeout_deletingTask);
 }
 
 // Hide 'cancel delete task' banner
 function removingCancelBtn() {
-    console.log('Removing cancel delete');
     cancelDelete.classList.remove('show-cancel-delete');
 }
 
 // Undo deleting the last clicked task (while 'cancel delete task' banner is showing (4s))
 function cancelDeleteTask(event) {
-    // clearTimeout(timeout_deletingTask);
-
     cancelDelete.classList.remove('show-cancel-delete');
     cancelingTask.style.display = 'block';
 }

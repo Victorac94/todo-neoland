@@ -166,7 +166,12 @@ form input[type=text]::placeholder {
     padding-top: 6em;
 }
 
-.pending-tasks-wrapper h2 {
+.completed-tasks-wrapper {
+    width: 100%;
+}
+
+.pending-tasks-wrapper h2,
+.completed-tasks-wrapper h2 {
     font-size: 0.8em;
     padding: 0.5em 1em;
     font-weight: bold;
@@ -174,7 +179,12 @@ form input[type=text]::placeholder {
     color: white;
 }
 
-.pending-tasks-wrapper h2#task-added {
+.completed-tasks-wrapper h2 {
+    background-color: #646979;
+}
+
+.pending-tasks-wrapper h2#task-added,
+.completed-tasks-wrapper h2#task-re-added {
     position: fixed;
     top: 7.5em;
     width: 100%;
@@ -184,8 +194,14 @@ form input[type=text]::placeholder {
     transform-origin: top;
 }
 
-#pending-tasks {
+.completed-tasks-wrapper h2#task-re-added {
+    background-color: #e65c00;
+}
+
+#pending-tasks,
+#completed-tasks {
     padding: 0 2px;
+    /* overflow: hidden; */
 }
 
 .task-added {
@@ -207,6 +223,7 @@ form input[type=text]::placeholder {
 
 .task {
     width: 100%;
+    max-width: 100%;
     padding: 0.5em 1em;
     padding-right: 0.6em;
     color: #202020;
@@ -215,7 +232,12 @@ form input[type=text]::placeholder {
     border-radius: 5px;
     margin: 2px 0;
     position: relative;
+    overflow: hidden;
 }
+
+/* .pending-task {
+    transition: transform 0.5s;
+} */
 
 .add-task-animation {
     animation: add-task-animation 0.5s forwards;
@@ -255,6 +277,10 @@ form input[type=text]::placeholder {
 
 .urgent {
     border-color: #ff2e2e;
+}
+
+.completed-task {
+    border-color: #9c9c9c;
 }
 
 .task h3 {
@@ -309,14 +335,19 @@ form input[type=text]::placeholder {
     }
 }
 
-.fa-check {
-    color: #38ce38;
+.fa-level-up-alt {
     padding: 0.4em;
+    color: #6b6b6b;
+}
+
+.fa-check {
+    padding: 0.4em;
+    color: #38ce38;
 }
 
 .fa-trash {
-    color: #6b6b6b;
     padding: 0.4em;
+    color: #6b6b6b;
 }
 
 /*##################################

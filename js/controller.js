@@ -29,7 +29,6 @@ function deletingTask(idToRemove, cancelingTask, fromList) {
 
         if (idToRemove === task.idTarea) {
             fromList.splice(i, 1);
-            console.log(fromList);
         }
     }
 }
@@ -40,7 +39,6 @@ function swapTaskBetweenLists(taskId, fromList, toList) {
         if (taskId == t.idTarea) {
             fromList.splice(i, 1);
             toList.push(t);
-            console.log(fromList, toList);
         }
     })
 }

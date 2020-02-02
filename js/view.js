@@ -1,12 +1,11 @@
 /* TODO: 
     -Animar tareas para que ocupen el espacio de la tarea eliminada
     -Animar tarea que esta siendo eliminada
-    +Arreglar input incorrecto no se muestra
     -Agregar animacion de tarea restaurada (h2)
     -Arreglar que al restaurar una tarea solo se me muestre en la lista de tareas pendientes actual si no tengo filtro o las prioridades coinciden
 
    Hecho:
-   -Arreglado div 'input incorrecto' no se mostraba
+    -
  */
 
 let pendingTasksSection = document.querySelector('#pending-tasks');
@@ -101,6 +100,7 @@ function showPendingTasks(tasks = arrayPendingTasks, addingTask = false) {
 }
 
 showPendingTasks(arrayPendingTasks, true);
+inputAddTask.focus();
 
 function addNewTask(e) {
     e.preventDefault();
@@ -144,15 +144,16 @@ function addNewTask(e) {
         showPendingTasks(newTask, true); // Show this new task along with the others already shown
     }
     taskAddedHeader.classList.add('task-added'); // Animate 'Task added' header
-    setTimeout(() => {
+    taskAddedHeader.addEventListener('animationend', () => {
         taskAddedHeader.classList.remove('task-added') // Remove animation class from 'Task added' header
-    }, 2100)
+        taskAddedHeader.removeEventListener('animationend', this);
+    })
 }
 
 function addCompletedTask(e) {
     let completedTasks = document.querySelector('#completed-tasks');
     let completedTasksWrapper = document.querySelector('.completed-tasks-wrapper');
-    let restoreTaskIcon;
+    // let restoreTaskIcon;
     // 'e.target.parentNode.parentNode.parentNode' refers to the task where the tick icon was clicked, the <article>
     let task = e.target.parentNode.parentNode.parentNode;
     let [yElemMove, ySiblingsMove] = calculatePositions(task, completedTasks);
@@ -160,59 +161,111 @@ function addCompletedTask(e) {
     let nextElems = moveAffectedElements(task, ySiblingsMove, completedTasksWrapper, false);
 
     // Translate the completed task to the 'completed tasks' section
+    // task.style.transform = `translateY(${yElemMove}px)`;
+    // task.style.zIndex = '10';
+    // task.querySelector('i:first-child').classList.remove('fa-check');
+    // task.querySelector('i:first-child').classList.add('fa-level-up-alt');
+    // task.querySelector('i:last-child').classList.remove('fa-trash');
+    // task.addEventListener('transitionend', () => {
+    //     let taskCompleted = task.cloneNode(true); // If true, also copies the inner nodes
+    //     nextElems.forEach(elem => {
+    //         elem.style.transition = '0s'; // 0s makes the trick. If not, transition from class 'pending-task' remains active
+    //         elem.style.transform = '';
+    //     })
+    //     task.remove();
+    //     restoreTaskIcon = taskCompleted.querySelector('.fa-level-up-alt');
+    //     restoreTaskIcon.addEventListener('click', restoreTask);
+    //     taskCompleted.style.transition = '';
+    //     taskCompleted.style.transform = '';
+    //     taskCompleted.style.zIndex = 'initial';
+    //     taskCompleted.classList.remove('pending-task');
+    //     taskCompleted.classList.add('completed-task');
+    //     completedTasks.appendChild(taskCompleted);
+    //     swapTaskBetweenLists(taskCompleted.dataset.id, arrayPendingTasks, arrayCompletedTasks);
+    // })
+    manipulateTasks(task, nextElems, completedTasks, yElemMove, false);
+}
+
+function manipulateTasks(task, nextElems, sectionToAppend, yElemMove, isRestoringTask) {
     task.style.transform = `translateY(${yElemMove}px)`;
     task.style.zIndex = '10';
-    task.querySelector('i:first-child').classList.remove('fa-check');
-    task.querySelector('i:first-child').classList.add('fa-level-up-alt');
-    task.querySelector('i:last-child').classList.remove('fa-trash');
+    if (isRestoringTask) {
+        task.querySelector('i:first-child').classList.remove('fa-level-up-alt');
+        task.querySelector('i:first-child').classList.add('fa-check');
+        task.querySelector('i').parentNode.innerHTML += '<i class="fas fa-trash"></i>';
+    } else {
+        task.querySelector('i:first-child').classList.remove('fa-check');
+        task.querySelector('i:first-child').classList.add('fa-level-up-alt');
+        task.querySelector('i:last-child').classList.remove('fa-trash');
+    }
+
     task.addEventListener('transitionend', () => {
         let taskCompleted = task.cloneNode(true); // If true, also copies the inner nodes
+
         nextElems.forEach(elem => {
             elem.style.transition = '0s'; // 0s makes the trick. If not, transition from class 'pending-task' remains active
             elem.style.transform = '';
         })
         task.remove();
-        restoreTaskIcon = taskCompleted.querySelector('.fa-level-up-alt');
-        restoreTaskIcon.addEventListener('click', restoreTask);
+
+        if (isRestoringTask) {
+            taskCompleted.querySelector('i:first-child').addEventListener('click', addCompletedTask);
+            taskCompleted.querySelector('i:last-child').addEventListener('click', removeTask);
+            taskCompleted.classList.remove('completed-task');
+            taskCompleted.classList.add('pending-task');
+        } else {
+            let restoreTaskIcon = taskCompleted.querySelector('.fa-level-up-alt');
+            restoreTaskIcon.addEventListener('click', restoreTask);
+            taskCompleted.classList.remove('pending-task');
+            taskCompleted.classList.add('completed-task');
+        }
         taskCompleted.style.transition = '';
         taskCompleted.style.transform = '';
         taskCompleted.style.zIndex = 'initial';
-        taskCompleted.classList.remove('pending-task');
-        taskCompleted.classList.add('completed-task');
-        completedTasks.appendChild(taskCompleted);
-        swapTaskBetweenLists(taskCompleted.dataset.id, arrayPendingTasks, arrayCompletedTasks);
+        sectionToAppend.appendChild(taskCompleted);
+        if (isRestoringTask) {
+            swapTaskBetweenLists(taskCompleted.dataset.id, arrayCompletedTasks, arrayPendingTasks);
+        } else {
+            swapTaskBetweenLists(taskCompleted.dataset.id, arrayPendingTasks, arrayCompletedTasks);
+        }
     })
 }
-// No se ejecuta esta funcion??
+
 function restoreTask(e) {
     let task = e.target.parentNode.parentNode.parentNode; // The task itself, the <article>
+    // let taskRestoredHeader = document.querySelector('#task-restored');
     let completedTasksWrapper = document.querySelector('.completed-tasks-wrapper');
     let [yElemMove, ySiblingsMove] = calculatePositions(task, pendingTasksSection);
-
     let nextElems = moveAffectedElements(task, ySiblingsMove, completedTasksWrapper, true);
 
-    task.style.transform = `translateY(${yElemMove}px)`;
-    task.style.zIndex = '10';
-    task.querySelector('i:first-child').classList.remove('fa-level-up-alt');
-    task.querySelector('i:first-child').classList.add('fa-check');
-    task.querySelector('i').parentNode.innerHTML += '<i class="fas fa-trash"></i>';
-    task.addEventListener('transitionend', () => {
-        let taskCompleted = task.cloneNode(true); // If true, also copies the inner nodes
-        nextElems.forEach(elem => {
-            elem.style.transition = '0s'; // 0s makes the trick. If not, transition from class 'pending-task' remains active
-            elem.style.transform = '';
-        })
-        task.remove();
-        taskCompleted.querySelector('i:first-child').addEventListener('click', addCompletedTask);
-        taskCompleted.querySelector('i:last-child').addEventListener('click', removeTask);
-        taskCompleted.style.transition = '';
-        taskCompleted.style.transform = '';
-        taskCompleted.style.zIndex = 'initial';
-        taskCompleted.classList.remove('completed-task');
-        taskCompleted.classList.add('pending-task');
-        pendingTasksSection.appendChild(taskCompleted);
-        swapTaskBetweenLists(taskCompleted.dataset.id, arrayCompletedTasks, arrayPendingTasks);
-    })
+    // task.style.transform = `translateY(${yElemMove}px)`;
+    // task.style.zIndex = '10';
+    // task.querySelector('i:first-child').classList.remove('fa-level-up-alt');
+    // task.querySelector('i:first-child').classList.add('fa-check');
+    // task.querySelector('i').parentNode.innerHTML += '<i class="fas fa-trash"></i>';
+    // task.addEventListener('transitionend', () => {
+    //     let taskCompleted = task.cloneNode(true); // If true, also copies the inner nodes
+    //     nextElems.forEach(elem => {
+    //         elem.style.transition = '0s'; // 0s makes the trick. If not, transition from class 'pending-task' remains active
+    //         elem.style.transform = '';
+    //     })
+    //     task.remove();
+    //     taskCompleted.querySelector('i:first-child').addEventListener('click', addCompletedTask);
+    //     taskCompleted.querySelector('i:last-child').addEventListener('click', removeTask);
+    //     taskCompleted.style.transition = '';
+    //     taskCompleted.style.transform = '';
+    //     taskCompleted.style.zIndex = 'initial';
+    //     taskCompleted.classList.remove('completed-task');
+    //     taskCompleted.classList.add('pending-task');
+    //     pendingTasksSection.appendChild(taskCompleted);
+    //     swapTaskBetweenLists(taskCompleted.dataset.id, arrayCompletedTasks, arrayPendingTasks);
+    // })
+    manipulateTasks(task, nextElems, pendingTasksSection, yElemMove, true);
+    // taskRestoredHeader.classList.add('task-added');
+    // taskRestoredHeader.addEventListener('animationend', () => {
+    //     taskRestoredHeader.classList.remove('task-added');
+    //     taskRestoredHeader.removeEventListener('animationend', this);
+    // })
 }
 
 // Translate the tasks that come after the one completed/re-added and the tasks completed section to occupy its position

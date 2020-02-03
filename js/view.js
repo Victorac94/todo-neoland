@@ -21,7 +21,10 @@ let idCount = arrayPendingTasks.length; // This variable increases everytime we 
 let idToRemove;
 let cancelingTask;
 
-addTaskIcon.addEventListener('click', addNewTask);
+addTaskIcon.addEventListener('click', e => {
+    addNewTask(e);
+    toggleClearInputButton(e);
+});
 inputAddTask.addEventListener('keydown', e => {
     if (e.keyCode == 13) {
         addNewTask(e);
@@ -45,8 +48,14 @@ function toggleClearInputButton(e) {
             e.target.nextElementSibling.classList.remove('show-clear-input');
         }
     }
+    else if (e.target.id === 'add-task-icon') {
+        const clearIcon = document.querySelector('.clear-input');
+        clearIcon.classList.remove('show-clear-input');
+    }
     // If this function has been called by clicking on the clear input icon
     else {
+        console.log(e.target);
+        console.log(e.currentTarget);
         e.currentTarget.classList.remove('show-clear-input');
     }
 }

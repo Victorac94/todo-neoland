@@ -369,14 +369,3 @@ form input[type=text]::placeholder {
         left: calc(50% - 12.5em);
     }
 }
-
-@media (min-width: 75em) /* 1200px */ {
-    body > .container,
-    header,
-    #cancel-delete {
-        max-width: 62.5em; /* 1000px */
-    }
-    .pending-tasks-wrapper h2#task-added {
-        max-width: 78.125em; /* is equivalent to 62.5em or 1000px at font-size: 1em. But this h2 has font-size: 0.8em */
-    }
-}

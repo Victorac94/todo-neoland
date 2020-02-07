@@ -184,7 +184,7 @@ form input[type=text]::placeholder {
 }
 
 .pending-tasks-wrapper h2#task-added,
-.completed-tasks-wrapper h2#task-re-added {
+.completed-tasks-wrapper h2#task-restored {
     position: fixed;
     top: 7.5em;
     width: 100%;
@@ -192,20 +192,20 @@ form input[type=text]::placeholder {
     background-color: #009b00;
     transform: rotateX(-90deg);
     transform-origin: top;
+    z-index: 1000;
 }
 
-.completed-tasks-wrapper h2#task-re-added {
+.completed-tasks-wrapper h2#task-restored {
     background-color: #e65c00;
 }
 
 #pending-tasks,
 #completed-tasks {
     padding: 0 2px;
-    /* overflow: hidden; */
 }
 
 .task-added {
-    animation: animation-task-added 2s;
+    animation: animation-task-added 2.2s;
     animation-delay: 0.1s;
 }
 
@@ -216,8 +216,11 @@ form input[type=text]::placeholder {
     25% {
         transform: rotateX(0);
     }
-    100% {
+    85% {
         transform: rotateX(0);
+    }
+    100% {
+        transform: rotateX(-90deg);
     }
 }
 
@@ -271,7 +274,6 @@ form input[type=text]::placeholder {
 }
 
 .weekly {
-    border-color: #ff7424;
     border-color: #a724ff;
 }
 
@@ -365,16 +367,5 @@ form input[type=text]::placeholder {
     #cancel-delete {
         width: 25em;
         left: calc(50% - 12.5em);
-    }
-}
-
-@media (min-width: 75em) /* 1200px */ {
-    body > .container,
-    header,
-    #cancel-delete {
-        max-width: 62.5em; /* 1000px */
-    }
-    .pending-tasks-wrapper h2#task-added {
-        max-width: 78.125em; /* is equivalent to 62.5em or 1000px at font-size: 1em. But this h2 has font-size: 0.8em */
     }
 }
